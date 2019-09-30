@@ -28,6 +28,21 @@ const teamName = Joi.string()
 const teamMembers = Joi.number()
   .required();
 
+const hostTeam = Joi.string()
+  .required();
+
+const awayTeam = Joi.string()
+  .required();
+
+const matchDate = Joi.date()
+  .required();
+
+const matchVenue = Joi.string()
+  .required();
+
+const isPlayed = Joi.boolean()
+  .required();
+
 const signupSchema = {
   body: {
     firstName,
@@ -44,6 +59,13 @@ const loginSchema = {
   },
 };
 
+const createTeamSchema = {
+  body: {
+    teamName,
+    teamMembers,
+  },
+};
+
 const teamParamSchema = {
   params: {
     teamId: Joi.string()
@@ -52,10 +74,20 @@ const teamParamSchema = {
   },
 };
 
-const createTeamSchema = {
+const createFixtureSchema = {
   body: {
-    teamName,
-    teamMembers,
+    hostTeam,
+    awayTeam,
+    matchDate,
+    matchVenue,
+  },
+};
+
+const fixtureParamSchema = {
+  params: {
+    fixtureId: Joi.string()
+      .regex(/^[a-fA-F0-9]{24}$/)
+      .error(new Error('Invalid fixture Id')),
   },
 };
 
@@ -90,5 +122,26 @@ export default [
     route: '/:teamId',
     method: 'delete',
     schema: teamParamSchema,
+  },
+
+  {
+    route: '/',
+    method: 'post',
+    schema: createFixtureSchema,
+  },
+  {
+    route: '/:fixtureId',
+    method: 'patch',
+    schema: fixtureParamSchema,
+  },
+  {
+    route: '/:fixtureId',
+    method: 'get',
+    schema: fixtureParamSchema,
+  },
+  {
+    route: '/:fixtureId',
+    method: 'delete',
+    schema: fixtureParamSchema,
   },
 ];
