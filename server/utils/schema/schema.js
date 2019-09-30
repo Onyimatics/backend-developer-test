@@ -22,6 +22,12 @@ const loginPassword = Joi.string()
   .required()
   .strict();
 
+const teamName = Joi.string()
+  .required();
+
+const teamMembers = Joi.number()
+  .required();
+
 const signupSchema = {
   body: {
     firstName,
@@ -38,6 +44,22 @@ const loginSchema = {
   },
 };
 
+const teamParamSchema = {
+  params: {
+    teamId: Joi.string()
+      .regex(/^[a-fA-F0-9]{24}$/)
+      .error(new Error('Invalid team Id')),
+  },
+};
+
+const createTeamSchema = {
+  body: {
+    teamName,
+    teamMembers,
+  },
+};
+
+
 export default [
   {
     route: '/signup',
@@ -48,5 +70,25 @@ export default [
     route: '/signin',
     method: 'post',
     schema: loginSchema,
+  },
+  {
+    route: '/',
+    method: 'post',
+    schema: createTeamSchema,
+  },
+  {
+    route: '/:teamId',
+    method: 'patch',
+    schema: teamParamSchema,
+  },
+  {
+    route: '/:teamId',
+    method: 'get',
+    schema: teamParamSchema,
+  },
+  {
+    route: '/:teamId',
+    method: 'delete',
+    schema: teamParamSchema,
   },
 ];
